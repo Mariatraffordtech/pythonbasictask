@@ -37,40 +37,35 @@ For fun, feed your program to itself as input.
 Could work on getting it to put in linebreaks around 70
 columns, so the output looks better.
 
-"""
-
+import random
 import sys
 
-
-def mimic_dict(filename):
-    """Returns mimic dict mapping each word to list of words which follow it."""
-    # +++your code here+++
-  mimic_dict = {}
-  f = open(filename, 'r')
-  text = f.read()
-  f.close()
-  words = text.split()
-  prev = ''
-  for word in words:
-    if not prev in mimic_dict:
-      mimic_dict[prev] = [word]
+def mimic_dict(small):
+  d = {}
+  with open(small) as f:
+    text = f.read()
+    words = text.split()
+  i = 0
+  for i in range(len(words) - 1):
+    if words[i] not in d:
+      d[words[i]] = [words[i + 1]]
     else:
-      mimic_dict[prev].append(word)
-    # Could write as: mimic_dict[prev] = mimic_dict.get(prev, []) + [word]
-    # It's one line, but not totally satisfying.
-    prev = word
-  return mimic_dict
+      d[words[i]].append(words[i+1])
+    i += 1
+  d[''] = words[0]
+  return d
 
+def print_mimic(d, word):
+  mimic_text = []
+  while len(mimic_text) < 200:
+    if word in d:
+      next_word = random.choice(d[word])
+      mimic_text.append(next_word)
+      word = next_word
+    else:
+      word = ''
+  print (' '.join(mimic_text))
 
-def print_mimic(mimic_dict, word):
-    """Given mimic dict and start word, prints 200 random words."""
-    # +++your code here+++
-   for unused_i in range(200):
-    print word,
-    nexts = mimic_dict.get(word)          
-    if not nexts:
-      nexts = mimic_dict[''] 
-    word = random.choice(nexts)
 
 
 # Provided main(), calls mimic_dict() and mimic()
